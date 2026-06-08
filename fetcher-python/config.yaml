@@ -1,0 +1,24 @@
+# Python 抓取端配置
+# 数据根目录(相对本文件或绝对路径均可);默认指向仓库根的 data/
+data_dir: "../data"
+
+# 限流:控制对数据源(东财)的请求频率,避免过密被限流/封禁。
+# 任意两次请求间隔 >= min_interval,并叠加 [0, jitter] 的随机抖动。
+# 批量抓多只股票时建议调大(如 2~3 秒)。设 min_interval: 0 可关闭。
+rate_limit:
+  min_interval: 1.5
+  jitter: 0.8
+
+# 历史行情默认参数
+market:
+  period: "daily"      # daily / weekly / monthly
+  adjust: "qfq"        # 主序列 daily.csv 的复权: qfq(前复权) / hfq(后复权) / ""(不复权)
+  start_date: "20100101"
+  end_date: ""         # 空表示抓到最新
+  store_hfq: true      # 额外存一份后复权 daily_hfq.csv,供前端 前/后复权 切换
+
+# 默认抓取的股票池(6 位代码,不带交易所前缀)
+# 可用 CLI 覆盖: python -m agibuffett fetch 600519 000001
+symbols:
+  - "600519"   # 贵州茅台
+  - "000001"   # 平安银行

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AGI·BUFFETT — 量化终端</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="scanlines"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">◆</span>
+      <span class="brand-name">AGI·BUFFETT</span>
+      <span class="brand-sub">// VALUE TERMINAL</span>
+    </div>
+    <div class="topbar-right">
+      <span class="status"><i class="dot"></i> LIVE · 本地</span>
+      <span id="clock" class="clock mono">--:--:--</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <div class="panel-title">自选股 / WATCHLIST</div>
+      <div id="group-tabs" class="group-tabs"></div>
+      <div id="stock-list" class="stock-list"></div>
+      <div class="sidebar-foot mono" id="wl-updated"></div>
+    </aside>
+
+    <section class="content">
+      <div id="detail" class="detail">
+        <div class="empty mono">◂ 选择左侧标的查看基本面</div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
