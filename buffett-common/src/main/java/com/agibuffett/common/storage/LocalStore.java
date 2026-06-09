@@ -37,9 +37,10 @@ public class LocalStore {
     public static final String INCOME_STATEMENT = "income_statement";
     public static final String CASH_FLOW = "cash_flow";
     public static final String DIVIDEND = "dividend";
-    /** 行情文件名:前复权(主)/ 后复权 */
+    /** 行情文件名:前复权(主)/ 后复权 / 不复权(真实历史价) */
     public static final String DAILY = "daily.csv";
     public static final String DAILY_HFQ = "daily_hfq.csv";
+    public static final String DAILY_RAW = "daily_raw.csv";
 
     private final Path dataDir;
     private final ObjectMapper mapper;
@@ -104,6 +105,22 @@ public class LocalStore {
             return mapper.readValue(p.toFile(), Watchlist.class);
         } catch (IOException e) {
             throw new UncheckedIOException("读取自选股清单失败: " + p, e);
+        }
+    }
+
+    // ---- 写自选股清单(与 Python 端格式一致:snake_case + 缩进 2)----
+    /** 原子写回 {@code data/watchlist.json};经临时文件 + move 保证不写半截。 */
+    public void writeWatchlist(Watchlist wl) {
+        Path p = watchlistFile();
+        Path tmp = p.resolveSibling("watchlist.json.tmp");
+        try {
+            Files.createDirectories(p.getParent());
+            byte[] bytes = mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(wl);
+            Files.write(tmp, bytes);
+            Files.move(tmp, p, java.nio.file.StandardCopyOption.REPLACE_EXISTING,
+                    java.nio.file.StandardCopyOption.ATOMIC_MOVE);
+        } catch (IOException e) {
+            throw new UncheckedIOException("写入自选股清单失败: " + p, e);
         }
     }
 

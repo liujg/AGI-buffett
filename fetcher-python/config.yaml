@@ -16,6 +16,7 @@ market:
   start_date: "20100101"
   end_date: ""         # 空表示抓到最新
   store_hfq: true      # 额外存一份后复权 daily_hfq.csv,供前端 前/后复权 切换
+  store_raw: true      # 额外存一份不复权 daily_raw.csv(真实历史价,用于算股息率/估值)
 
 # 默认抓取的股票池(6 位代码,不带交易所前缀)
 # 可用 CLI 覆盖: python -m agibuffett fetch 600519 000001

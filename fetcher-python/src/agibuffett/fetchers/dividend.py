@@ -118,17 +118,50 @@ class DividendFetcher:
 
 
 def _parse_hk_plan(plan: Optional[str]):
-    """从港股分红方案文本解析每股派息与币种,如 '每股派港币5.3元' -> (5.3, 'HKD')。"""
+    """从港股分红方案文本解析**每股现金派息**与币种,统一取交易币种(港币)口径。
+
+    港股以港币交易,故优先取港币金额,使其与行情(港币)一致:
+    - '每股派港币2.4元'                       -> (2.4, 'HKD')
+    - '每股派人民币2.276元(相当于港币2.52元)' -> (2.52, 'HKD')   # 取换算后的港币
+    - '每股派美元0.1元'                        -> (0.1, 'USD')
+
+    **实物分派(以股代息)** 不是现金分红,返回 (None, ...) 不计入:
+    - '每21股腾讯股份分派1股京东集团A类普通股股份'            -> (None, 'HKD')
+    - '每10股分派1股美团B类普通股股份(相当于每股派18.13港元)' -> (None, 'HKD')
+    早期 bug:兜底"取第一处数字"会把比例数(如"每21股…")误当成 21 港元,导致虚高。
+    """
     if not plan:
         return None, "HKD"
-    currency = "HKD"
-    if "美元" in plan or "美金" in plan or "US$" in plan:
-        currency = "USD"
-    elif "人民币" in plan or "￥" in plan:
-        currency = "CNY"
-    m = re.search(r"(\d+(?:\.\d+)?)", plan.replace(",", ""))
-    cash = float(m.group(1)) if m else None
-    return cash, currency
+    p = plan.replace(",", "").replace(" ", "")
+    # 实物分派股份(分派…股份/普通股,即以股代息),非现金分红,直接排除
+    if "分派" in p and ("股份" in p or "普通股" in p):
+        return None, "HKD"
+
+    def amount(*patterns):
+        for pat in patterns:
+            m = re.search(pat, p)
+            if m:
+                return float(m.group(1))
+        return None
+
+    # 1) 港币(交易币种)优先:数字在 港币/港元 之后或之前
+    hk = amount(r"港[币元](\d+(?:\.\d+)?)", r"(\d+(?:\.\d+)?)港[元币]")
+    if hk is not None:
+        return hk, "HKD"
+    # 2) 美元
+    us = amount(r"(?:美元|美金|US\$)(\d+(?:\.\d+)?)", r"(\d+(?:\.\d+)?)美元")
+    if us is not None:
+        return us, "USD"
+    # 3) 人民币(无港币换算时)
+    cn = amount(r"(?:人民币|￥)(\d+(?:\.\d+)?)", r"(\d+(?:\.\d+)?)人民币")
+    if cn is not None:
+        return cn, "CNY"
+    # 4) 通用现金:"派…X元"(仅在确为派现金时,不抓比例数)
+    cash = amount(r"派(\d+(?:\.\d+)?)元")
+    if cash is not None:
+        return cash, "HKD"
+    # 解析不出现金金额(如纯文字说明)→ 不计为现金分红
+    return None, "HKD"
 
 
 def _txt(v: Any) -> Optional[str]:

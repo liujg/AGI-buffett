@@ -85,7 +85,7 @@ src/agibuffett/
 | 数据 | AKShare 函数 |
 | --- | --- |
 | A股 三表 | `stock_balance_sheet_by_report_em` / `stock_profit_sheet_by_report_em` / `stock_cash_flow_sheet_by_report_em` |
-| A股 日线 / 分红 | `stock_zh_a_hist` / `stock_fhps_detail_em` |
+| A股 日线 / 分红 | `stock_zh_a_hist`(东财,失败自动兜底新浪 `stock_zh_a_daily`)/ `stock_fhps_detail_em` |
 | 港股 三表 / 日线 | `stock_financial_hk_report_em` / `stock_hk_hist` |
 | 美股 三表 / 日线 | `stock_financial_us_report_em`(综合损益表)/ `stock_us_hist`(东财代码如 `105.AAPL`) |
 

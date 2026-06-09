@@ -23,7 +23,23 @@
 
   <main class="layout">
     <aside class="sidebar">
-      <div class="panel-title">自选股 / WATCHLIST</div>
+      <div class="panel-title">自选股 / WATCHLIST
+        <button id="wl-add-btn" class="wl-add-btn" title="添加自选">＋</button>
+      </div>
+      <form id="wl-add-form" class="wl-add-form" hidden>
+        <input id="wl-sym" class="wl-input" placeholder="代码 如 600519 / 00700 / AAPL" autocomplete="off" />
+        <div class="wl-row">
+          <select id="wl-mkt" class="wl-input">
+            <option value="A">A股</option><option value="HK">港股</option><option value="US">美股</option>
+          </select>
+          <input id="wl-name" class="wl-input" placeholder="名称(可选)" autocomplete="off" />
+        </div>
+        <div class="wl-row">
+          <select id="wl-group" class="wl-input"></select>
+          <button type="submit" class="wl-submit">添加</button>
+        </div>
+        <div id="wl-add-msg" class="wl-msg"></div>
+      </form>
       <div id="group-tabs" class="group-tabs"></div>
       <div id="stock-list" class="stock-list"></div>
       <div class="sidebar-foot mono" id="wl-updated"></div>

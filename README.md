@@ -48,7 +48,16 @@ agibuffett watch add 00700 -g watch -m HK -n 腾讯控股
 
 详见 [`fetcher-python/README.md`](fetcher-python/README.md)。
 
-### 2) 构建分析端(Java 8 + Maven)
+### 2) 一键启动前端(推荐)
+
+```bash
+./restart.sh            # 关闭旧实例→编译→打包→启动,默认端口 8080
+./restart.sh 8090       # 指定端口
+./restart.sh 8080 stop  # 仅关闭
+```
+启动后访问 http://localhost:8080(日志 `buffett-web.log`)。
+
+### 3) 构建分析端(Java 8 + Maven)
 
 ```bash
 mvn clean install                  # 编译 + 跑测试

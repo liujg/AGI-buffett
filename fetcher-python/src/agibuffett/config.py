@@ -18,6 +18,7 @@ class MarketConfig:
     start_date: str = "20100101"
     end_date: str = ""
     store_hfq: bool = True     # 额外存一份后复权 daily_hfq.csv,供前端切换
+    store_raw: bool = True     # 额外存一份不复权 daily_raw.csv(真实历史价,算股息率/估值用)
 
 
 @dataclass
@@ -63,6 +64,7 @@ def load_config(path: Optional[str] = None) -> Config:
         start_date=str(market_raw.get("start_date", "20100101")),
         end_date=str(market_raw.get("end_date", "") or ""),
         store_hfq=bool(market_raw.get("store_hfq", True)),
+        store_raw=bool(market_raw.get("store_raw", True)),
     )
 
     rl_raw = raw.get("rate_limit", {}) or {}

@@ -50,6 +50,15 @@ public final class WebServer {
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.setExecutor(Executors.newFixedThreadPool(4));
         server.createContext("/api/watchlist", new ApiHandler(ex -> service.watchlist()));
+        // 写自选:添加 / 删除(POST JSON),同步落盘 watchlist.json
+        server.createContext("/api/watchlist/add", new ApiHandler(ex -> {
+            Map<String, Object> b = body(ex);
+            return service.addWatch(str(b, "symbol"), str(b, "market"), str(b, "name"), str(b, "group"));
+        }));
+        server.createContext("/api/watchlist/remove", new ApiHandler(ex -> {
+            Map<String, Object> b = body(ex);
+            return service.removeWatch(str(b, "symbol"), str(b, "group"));
+        }));
         server.createContext("/api/stock", new ApiHandler(ex -> {
             Map<String, String> q = query(ex.getRequestURI());
             String symbol = q.get("symbol");
@@ -140,6 +149,21 @@ public final class WebServer {
         Map<String, Object> m = new LinkedHashMap<>();
         m.put("error", msg);
         return m;
+    }
+
+    /** 读取并解析请求体 JSON 为 Map(空体返回空 Map)。 */
+    @SuppressWarnings("unchecked")
+    private static Map<String, Object> body(HttpExchange ex) throws IOException {
+        byte[] data = readAll(ex.getRequestBody());
+        if (data.length == 0) {
+            return new HashMap<>();
+        }
+        return MAPPER.readValue(data, Map.class);
+    }
+
+    private static String str(Map<String, Object> m, String key) {
+        Object v = m.get(key);
+        return v == null ? null : String.valueOf(v);
     }
 
     private static Map<String, String> query(URI uri) {

@@ -1,30 +1,45 @@
 {
-  "version": 1,
-  "updated_at": "2026-06-08",
-  "groups": [
-    {
-      "key": "watch",
-      "name": "自选",
-      "items": [
-        { "symbol": "600519", "market": "A", "name": "贵州茅台" },
-        { "symbol": "00700", "market": "HK", "name": "腾讯控股" }
-      ]
-    },
-    {
-      "key": "focus",
-      "name": "重点观察",
-      "items": [
-        { "symbol": "000858", "market": "A", "name": "五粮液" },
-        { "symbol": "AAPL", "market": "US", "name": "苹果" }
-      ]
-    },
-    {
-      "key": "opportunity",
-      "name": "机会点",
-      "items": [
-        { "symbol": "002594", "market": "A", "name": "比亚迪" },
-        { "symbol": "NVDA", "market": "US", "name": "英伟达" }
-      ]
-    }
-  ]
+  "version" : 1,
+  "updated_at" : "2026-06-09",
+  "groups" : [ {
+    "key" : "watch",
+    "name" : "自选",
+    "items" : [ {
+      "symbol" : "600519",
+      "market" : "A",
+      "name" : "贵州茅台"
+    }, {
+      "symbol" : "00700",
+      "market" : "HK",
+      "name" : "腾讯控股"
+    }, {
+      "symbol" : "00941",
+      "market" : "HK",
+      "name" : "中国移动"
+    } ]
+  }, {
+    "key" : "focus",
+    "name" : "重点观察",
+    "items" : [ {
+      "symbol" : "000858",
+      "market" : "A",
+      "name" : "五粮液"
+    }, {
+      "symbol" : "AAPL",
+      "market" : "US",
+      "name" : "苹果"
+    } ]
+  }, {
+    "key" : "opportunity",
+    "name" : "机会点",
+    "items" : [ {
+      "symbol" : "002594",
+      "market" : "A",
+      "name" : "比亚迪"
+    }, {
+      "symbol" : "NVDA",
+      "market" : "US",
+      "name" : "英伟达"
+    } ]
+  } ]
 }

@@ -78,20 +78,20 @@ class LocalStore:
         返回 (新增期数, 合并后总期数)。
         """
         existing = self.read_statement(symbol, statement)
-        by_date: "OrderedDict[str, Dict[str, Any]]" = OrderedDict()
+        by_key: "OrderedDict[tuple, Dict[str, Any]]" = OrderedDict()
         if existing:
             for r in existing.get("records", []):
-                by_date[r.get("report_date", "")] = r
-        existing_dates = set(by_date.keys())
+                by_key[_merge_key(r)] = r
+        existing_keys = set(by_key.keys())
 
         added = 0
         for r in new_records:
-            rd = r.get("report_date", "")
-            if rd not in existing_dates:
+            key = _merge_key(r)
+            if key not in existing_keys:
                 added += 1
-            by_date[rd] = r  # 覆盖以反映重述
+            by_key[key] = r  # 覆盖以反映重述
 
-        merged = sorted(by_date.values(),
+        merged = sorted(by_key.values(),
                         key=lambda r: r.get("report_date", ""), reverse=True)
         self.write_statement(symbol, statement, source, fetched_at, merged)
         return added, len(merged)
@@ -159,6 +159,12 @@ class LocalStore:
         self.write_market_daily(symbol, combined, filename)
         added = len(set(combined["date"]) - before)
         return added, len(combined)
+
+
+def _merge_key(r: Dict[str, Any]) -> tuple:
+    """记录去重键。报表只有 report_date;港股分红同一财政年度有多笔(中期/年度/特别),
+    需叠加 type 与 ex_date 才能区分,否则会被按年度折叠成一笔(漏掉末期派息)。"""
+    return (r.get("report_date", ""), r.get("type"), r.get("ex_date"))
 
 
 def dataframe_to_records(df: pd.DataFrame, date_col: str) -> List[Dict[str, Any]]:
